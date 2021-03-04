@@ -3,7 +3,7 @@ import numpy as np
 
 
 def beacon_parser(df):
-    parsed = np.zeros([np.shape(df)[0], 23 + 15])
+    parsed = np.zeros([np.shape(df)[0], 23 + 9]) - 200
     parsed[:, :23] = df.loc[:, 1:23].to_numpy()
 
     for beacon in np.arange(7):
