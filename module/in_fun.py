@@ -39,7 +39,7 @@ def self_sorter(ref, contact):
     
     return srted_list
 
-def pad_and_norm(srted_list, data_size=10):
+def pad_and_norm(srted_list, data_size = 20):
     constant_value = -200
     padded_list = []
     for srted in srted_list:

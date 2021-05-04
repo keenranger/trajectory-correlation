@@ -1,4 +1,5 @@
 data/*
+lightning_logs/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,3 +132,5 @@ dmypy.json
 .pyre/
 
 data/
+
+*.ckpt
