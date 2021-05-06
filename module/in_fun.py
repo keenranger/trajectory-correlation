@@ -17,7 +17,7 @@ def self_sorter(ref, contact):
     contact_by_ref = []
     for ref_idx in ref_idxs:
         cur = contact[1::2][(contact[::2] == ref_idx)]
-        if len(cur) is 0:
+        if len(cur) == 0:
             contact_by_ref.append(constant_value)
         else:
             contact_by_ref.append(cur[0])
@@ -27,7 +27,7 @@ def self_sorter(ref, contact):
     ref_by_contact = []
     for contact_idx in contact_idxs:
         cur = ref[1::2][(ref[::2] == contact_idx)]
-        if len(cur) is 0:
+        if len(cur) == 0:
             ref_by_contact.append(constant_value)
         else:
             ref_by_contact.append(cur[0])
@@ -36,32 +36,35 @@ def self_sorter(ref, contact):
     srted_list.append(ref_by_contact)
     srted_list.append(contact_by_ref)
     srted_list.append(contact_by_contact)
-    
+
     return srted_list
 
-def pad_and_norm(srted_list, data_size = 20):
+
+def pad_and_norm(srted_list, data_size=20):
     constant_value = -200
     padded_list = []
     for srted in srted_list:
         if len(srted) > data_size:
             padded = np.array(srted[:data_size])
         else:
-            padded = np.pad(srted, (data_size - len(srted), 0), constant_values = constant_value)
+            padded = np.pad(
+                srted, (data_size - len(srted), 0), constant_values=constant_value
+            )
         padded += 100
         padded = padded / 100
         padded_list.append(padded)
 
     inp_ref = np.concatenate([padded_list[0], padded_list[1]])
     inp_contact = np.concatenate([padded_list[2], padded_list[3]])
-    
+
     return inp_ref, inp_contact
+
 
 def test_matcher(a, b):
     srted_list = self_sorter(a, b)
     inp_ref, inp_contact = pad_and_norm(srted_list)
-    inp_diff = inp_ref - inp_contact
-    inp_each = np.concatenate([inp_ref, inp_contact])
-    return inp_diff, inp_each
+    return np.concatenate([inp_ref, inp_contact])
+
 
 def train_matcher(a, b):
     # 세가지 형태 (차abs, 차, 각각으로 제공)
@@ -75,9 +78,8 @@ def train_matcher(a, b):
         inp_contact_list.append(inp_contact)
     inp_ref_arr = np.array(inp_ref_list)
     inp_contact_arr = np.array(inp_contact_list)
-    inp_diff = inp_ref_arr - inp_contact_arr
-    inp_each = np.concatenate([inp_ref_arr, inp_contact_arr], axis=1)
-    return inp_diff, inp_each
+    return  np.concatenate([inp_ref_arr, inp_contact_arr], axis=1)
+
 
 def matcher_old(ref, contact):
     # 세가지 형태 (차abs, 차, 각각으로 제공)
@@ -160,5 +162,5 @@ def broadcaster(a, b):
     bcast_b = np.broadcast_to(
         b.reshape([1, len(b), lst_ax]), (len(a), len(b), lst_ax)
     ).reshape([len(a) * len(b), lst_ax])
-    
+
     return bcast_a, bcast_b
